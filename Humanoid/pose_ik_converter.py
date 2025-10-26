@@ -181,19 +181,18 @@ class PoseIKConverter:
         angle_l_knee = get_signed_angle(v_l_thigh, v_l_calf)
 
         # --- Apply Constraints ---
-        # Knees and Elbows can only bend one way (0 = straight)
-        # We take the absolute value because the 'sign' just indicates
-        # which side of the line it's on, but the bend is a positive rotation.
-        angle_r_elbow = np.clip(abs(angle_r_elbow), 0, np.radians(150))
-        angle_l_elbow = np.clip(abs(angle_l_elbow), 0, np.radians(150))
-        angle_r_knee = np.clip(abs(angle_r_knee), 0, np.radians(150))
-        angle_l_knee = np.clip(abs(angle_l_knee), 0, np.radians(150))
+        # For now, temporarily commented, might uncomment later based on RL Training.
 
-        # Hips and Shoulders are clamped to sane ranges
-        angle_r_hip = np.clip(angle_r_hip, np.radians(-90), np.radians(90))
-        angle_l_hip = np.clip(angle_l_hip, np.radians(-90), np.radians(90))
-        angle_r_shoulder = np.clip(angle_r_shoulder, np.radians(-150), np.radians(150))
-        angle_l_shoulder = np.clip(angle_l_shoulder, np.radians(-150), np.radians(150))
+        # angle_r_elbow = np.clip(abs(angle_r_elbow), 0, np.radians(150))
+        # angle_l_elbow = np.clip(abs(angle_l_elbow), 0, np.radians(150))
+        # angle_r_knee = np.clip(abs(angle_r_knee), 0, np.radians(150))
+        # angle_l_knee = np.clip(abs(angle_l_knee), 0, np.radians(150))
+        #
+        # # Hips and Shoulders are clamped to sane ranges
+        # angle_r_hip = np.clip(angle_r_hip, np.radians(-90), np.radians(90))
+        # angle_l_hip = np.clip(angle_l_hip, np.radians(-90), np.radians(90))
+        # angle_r_shoulder = np.clip(angle_r_shoulder, np.radians(-150), np.radians(150))
+        # angle_l_shoulder = np.clip(angle_l_shoulder, np.radians(-150), np.radians(150))
 
         # --- Assemble Final Vector ---
         # Indices: [chest, neck, r_shoulder, r_elbow, l_shoulder, l_elbow,
