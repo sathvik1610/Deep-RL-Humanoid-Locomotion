@@ -13,7 +13,6 @@ import msvcrt
 from pose_ik_converter import PoseIKConverter
 from humanoid_ik_env import HumanoidIKEnv
 
-image_path = "images/demo10.jpg"
 def run_ik_project():
     # --- Define paths ---
     DETECTOR_MODEL_PATH = "models/efficientdet_lite2.tflite"
@@ -287,8 +286,11 @@ if __name__ == "__main__":
     print(" " * 25 + "MODULE 1: POSE ESTIMATION & IK")  # Keep title consistent
     print("=" * 80)
 
+    # ===== Get script directory to make paths relative =====
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
     # ===== MODULE 1: Process Image and Get Initial Pose =====
-    detector_model = "models/efficientdet_lite2.tflite"
+    detector_model = os.path.join(script_dir, "models", "efficientdet_lite2.tflite")
 
     if not os.path.exists(detector_model):
         print(f"\n❌ ERROR: Detector model not found at: {detector_model}")
@@ -296,9 +298,8 @@ if __name__ == "__main__":
 
     converter = PoseIKConverter(detector_model, min_vis_threshold=0.5, min_detect_conf=0.3)
 
-      # Using demo.jpg from your latest log
-    # image_path = "images/demo8.jpg"
-    # image_path = "images/demo6.jpg"
+    # Using demo10.jpg as defined at the top of the file
+    image_path = os.path.join(script_dir, "images", "demo10.jpg")
 
     if not os.path.exists(image_path):
         print(f"\n❌ ERROR: Image file not found at: {image_path}")
