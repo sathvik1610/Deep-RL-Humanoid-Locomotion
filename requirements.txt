@@ -1,0 +1,9 @@
+gymnasium
+pybullet
+mediapipe
+stable-baselines3
+torch
+opencv-python
+numpy
+matplotlib
+tensorboard
