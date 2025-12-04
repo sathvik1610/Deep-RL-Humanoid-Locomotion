@@ -4,16 +4,17 @@ import os
 import sys
 import traceback
 import time
+import argparse
 import pybullet as p
 import pybullet_data  # To find humanoid.urdf
-import msvcrt
 
 # Import the NEW converter and environment classes
-# Ensure you are using pose_ik_converter (v5) and humanoid_ik_env (with crash fix)
-from pose_ik_converter import PoseIKConverter
-from humanoid_ik_env import HumanoidIKEnv
+from humanoid_walk.perception.pose_converter import PoseConverter
+from humanoid_walk.env.humanoid_env import HumanoidEnv
 
-image_path = "images/demo10.jpg"
+# Default image path (can be overridden via command line)
+DEFAULT_IMAGE_PATH = "images/demo10.jpg"
+
 def run_ik_project():
     # --- Define paths ---
     DETECTOR_MODEL_PATH = "models/efficientdet_lite2.tflite"
@@ -37,7 +38,7 @@ def run_ik_project():
 
         print(f"Using PyBullet data path: {pybullet_data_path}")
 
-        converter = PoseIKConverter(
+        converter = PoseConverter(
             detector_model_path=DETECTOR_MODEL_PATH,
             min_vis_threshold=0.5,
             min_detect_conf=0.3
@@ -48,7 +49,7 @@ def run_ik_project():
             temp_client = p.connect(p.DIRECT)
             p.setAdditionalSearchPath(pybullet_data_path, physicsClientId=temp_client)
             try:
-                temp_robot = p.loadURDF("humanoid.urdf", [0, 0, 1], useFixedBase=True, physicsClientId=temp_client)
+                temp_robot = p.loadURDF("humanoid/humanoid.urdf", [0, 0, 1], useFixedBase=True, physicsClientId=temp_client)
                 joint_names_from_converter = []
                 for i in range(p.getNumJoints(temp_robot, physicsClientId=temp_client)):
                     info = p.getJointInfo(temp_robot, i, physicsClientId=temp_client)
@@ -205,27 +206,27 @@ def run_with_toggle_picking(env, initial_pose_vector):
                                 physicsClientId=env._physics_client_id
                             )
                     # --- END OF FIX: 'F' KEY FREEZE ---
-                    else:
-                        # --- START OF FIX: 'F' KEY UNFREEZE (LIMP) ---
-                        print("▶️  Robot UNFROZEN (Limp)")
-                        for joint_idx in env.controllable_joint_indices:
-                            info = p.getJointInfo(
-                                env.robot_id, joint_idx, physicsClientId=env._physics_client_id
-                            )
-                            joint_type = info[2]
+                else:
+                    # --- START OF FIX: 'F' KEY UNFREEZE (LIMP) ---
+                    print("▶️  Robot UNFROZEN (Limp)")
+                    for joint_idx in env.controllable_joint_indices:
+                        info = p.getJointInfo(
+                            env.robot_id, joint_idx, physicsClientId=env._physics_client_id
+                        )
+                        joint_type = info[2]
 
-                            if joint_type == p.JOINT_REVOLUTE or joint_type == p.JOINT_PRISMATIC:
-                                p.setJointMotorControl2(
-                                    env.robot_id, joint_idx, p.VELOCITY_CONTROL, force=0,
-                                    physicsClientId=env._physics_client_id
-                                )
-                            elif joint_type == p.JOINT_SPHERICAL:
-                                p.setJointMotorControlMultiDof(
-                                    env.robot_id, joint_idx, p.VELOCITY_CONTROL,  # <-- Problematic mode
-                                    targetVelocity=[0, 0, 0],
-                                    force=[0, 0, 0],
-                                    physicsClientId=env._physics_client_id
-                                )
+                        if joint_type == p.JOINT_REVOLUTE or joint_type == p.JOINT_PRISMATIC:
+                            p.setJointMotorControl2(
+                                env.robot_id, joint_idx, p.VELOCITY_CONTROL, force=0,
+                                physicsClientId=env._physics_client_id
+                            )
+                        elif joint_type == p.JOINT_SPHERICAL:
+                            p.setJointMotorControlMultiDof(
+                                env.robot_id, joint_idx, p.VELOCITY_CONTROL,  # <-- Problematic mode
+                                targetVelocity=[0, 0, 0],
+                                force=[0, 0, 0],
+                                physicsClientId=env._physics_client_id
+                            )
                     # --- END OF FIX: 'F' KEY UNFREEZE (LIMP) ---
 
             # ESC - Freeze and keep window open (Freezes in CURRENT pose)
@@ -283,8 +284,15 @@ def run_with_toggle_picking(env, initial_pose_vector):
 # ============================================================================
 
 if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Humanoid Pose Demo")
+    parser.add_argument("--image", type=str, default=DEFAULT_IMAGE_PATH, 
+                        help="Path to input image")
+    args = parser.parse_args()
+    image_path = args.image
+
     print("\n" + "=" * 80)
-    print(" " * 25 + "MODULE 1: POSE ESTIMATION & IK")  # Keep title consistent
+    print(" " * 25 + "MODULE 1: POSE ESTIMATION")
     print("=" * 80)
 
     # ===== MODULE 1: Process Image and Get Initial Pose =====
@@ -294,11 +302,7 @@ if __name__ == "__main__":
         print(f"\n❌ ERROR: Detector model not found at: {detector_model}")
         sys.exit(1)
 
-    converter = PoseIKConverter(detector_model, min_vis_threshold=0.5, min_detect_conf=0.3)
-
-      # Using demo.jpg from your latest log
-    # image_path = "images/demo8.jpg"
-    # image_path = "images/demo6.jpg"
+    converter = PoseConverter(detector_model, min_vis_threshold=0.5, min_detect_conf=0.3)
 
     if not os.path.exists(image_path):
         print(f"\n❌ ERROR: Image file not found at: {image_path}")
@@ -340,7 +344,7 @@ if __name__ == "__main__":
         pybullet_data_path = pybullet_data.getDataPath()
         temp_client = p.connect(p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data_path, physicsClientId=temp_client)
-        temp_robot = p.loadURDF("humanoid.urdf", [0, 0, 1], useFixedBase=True, physicsClientId=temp_client)
+        temp_robot = p.loadURDF("humanoid/humanoid.urdf", [0, 0, 1], useFixedBase=True, physicsClientId=temp_client)
         for i in range(p.getNumJoints(temp_robot, physicsClientId=temp_client)):
             info = p.getJointInfo(temp_robot, i, physicsClientId=temp_client)
             joint_type = info[2]
@@ -434,7 +438,7 @@ if __name__ == "__main__":
 
     env = None
     try:
-        env = HumanoidIKEnv(render_mode='human')
+        env = HumanoidEnv(render_mode='human')
 
         print("\nResetting environment with θ_init from Module 1...")
         # env.reset() handles setting the initial pose via resetJointState

@@ -19,14 +19,14 @@ except ImportError:
     drawing_utils = None  # Handle if legacy solutions are not available
 
 
-class PoseIKConverter:
+class PoseConverter:
     """
     Module 1 using MediaPipe for detection/pose and direct geometric
     angle calculation (v5 - Joint-Specific References).
     """
 
     def __init__(self, detector_model_path, min_vis_threshold=0.5, min_detect_conf=0.3):
-        print("\n--- Initializing PoseIKConverter (Geometric Version) ---")
+        print("\n--- Initializing PoseConverter (Geometric Version) ---")
         self.MIN_VISIBILITY = min_vis_threshold
         self.MIN_DETECT_CONF = min_detect_conf
         self.MP_LANDMARKS = mp.solutions.pose.PoseLandmark
