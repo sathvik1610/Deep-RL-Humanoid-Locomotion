@@ -7,6 +7,8 @@ A complete pipeline for training a humanoid robot to walk using Deep Reinforceme
 ![PyBullet](https://img.shields.io/badge/PyBullet-3.0+-green.svg)
 
 ---
+## Walking Demo of Trained model
+![Walking Demo](trained_walking_policy.gif)
 
 ## 📋 Table of Contents
 
@@ -487,12 +489,6 @@ When running the simulation:
 - [PyBullet Physics Engine](https://pybullet.org/)
 - [MediaPipe Pose](https://google.github.io/mediapipe/solutions/pose.html)
 - [Stable-Baselines3](https://stable-baselines3.readthedocs.io/)
-
----
-
-## 👤 Author
-
-Developed as part of Reinforcement Learning coursework.
 
 ---
 
