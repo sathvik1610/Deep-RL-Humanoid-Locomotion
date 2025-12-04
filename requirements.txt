@@ -1,5 +1,7 @@
 gymnasium
 pybullet
+gym
+shimmy[gym-v21]
 mediapipe
 stable-baselines3
 torch
