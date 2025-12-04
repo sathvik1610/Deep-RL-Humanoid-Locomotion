@@ -139,8 +139,7 @@ When training with `--pose-library`, the 12 joint angles extracted from images a
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd RLISL
+git clone https://github.com/sathvik1610/Deep-RL-Humanoid-Locomotion
 
 # Install dependencies
 pip install -r requirements.txt
@@ -150,7 +149,8 @@ pip install -r requirements.txt
 ```
 gymnasium
 pybullet
-pybullet_envs
+gym
+shimmy[gym-v21]
 mediapipe
 stable-baselines3
 torch
@@ -158,6 +158,7 @@ opencv-python
 numpy
 matplotlib
 tensorboard
+
 ```
 
 ---
@@ -165,7 +166,7 @@ tensorboard
 ## 📁 Project Structure
 
 ```
-RLISL/
+humanoid_walk/
 ├── demo.py                          # Pose extraction demo
 ├── train.py                         # Training script
 ├── run_policy.py                    # Policy evaluation
