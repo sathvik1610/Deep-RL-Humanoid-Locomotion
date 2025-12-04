@@ -492,12 +492,6 @@ When running the simulation:
 
 ---
 
-## 👤 Author
-
-Developed as part of Reinforcement Learning coursework.
-
----
-
 ## 📄 License
 
 This project is for educational purposes.
