@@ -166,7 +166,7 @@ tensorboard
 ## 📁 Project Structure
 
 ```
-humanoid_walk/
+/
 ├── demo.py                          # Pose extraction demo
 ├── train.py                         # Training script
 ├── run_policy.py                    # Policy evaluation
@@ -212,7 +212,7 @@ humanoid_walk/
 # Use your trained model (default)
 python run_policy.py
 
-# Use baseline model (for comparison)
+# Use baseline model (Example trained model)
 python run_policy.py --baseline
 
 # Test with random actions
